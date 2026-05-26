@@ -5,6 +5,13 @@
 
 from ext4 import Volume, MagicError, ext4_superblock
 import sys, os
+
+# Force UTF-8 on stdout/stderr so non-ASCII volume names don't crash the Windows console.
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
 print("")
 def detect_type(sb):
     # CORRECT journal bit

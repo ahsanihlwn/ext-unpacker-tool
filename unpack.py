@@ -5,10 +5,18 @@
 
 
 import os
+import sys
 import re
 import struct
 from check import detect_type
 import ext4, ext3, ext2   # asumsi 3 file udah ada
+
+# Force UTF-8 on stdout/stderr so non-ASCII paths don't crash the Windows console.
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
 
 # === CONFIG DASAR ===
 Volume = None  # akan di-set runtime
@@ -328,7 +336,7 @@ def main(img_path: str):
         finfo.write(f"BlockCount: {vol.get_block_count}\n")
         finfo.write(f"FreeBlocks: {vol.get_free_blocks_count}\n")
         finfo.write(f"MountPoint: {vol.get_mount_point}\n")
-        finfo.write(f"VolumeName: {vol.superblock.s_volume_name.decode()}\n")
+        finfo.write(f"VolumeName: {vol.superblock.s_volume_name.decode('utf-8', errors='ignore').rstrip(chr(0))}\n")
         finfo.write(f"UUID: {vol.uuid}\n")
         
     # === RETURN KE GUI ===
@@ -424,7 +432,7 @@ if __name__ == "__main__":
         finfo.write(f"BlockCount: {vol.get_block_count}\n")
         finfo.write(f"FreeBlocks: {vol.get_free_blocks_count}\n")
         finfo.write(f"MountPoint: {vol.get_mount_point}\n")
-        finfo.write(f"VolumeName: {vol.superblock.s_volume_name.decode()}\n")
+        finfo.write(f"VolumeName: {vol.superblock.s_volume_name.decode('utf-8', errors='ignore').rstrip(chr(0))}\n")
         finfo.write(f"UUID: {vol.uuid}\n")
 
     print("📄 info           ->", info_path)

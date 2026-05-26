@@ -6,6 +6,14 @@
 import sys
 import os
 
+# Force UTF-8 on stdout/stderr so non-ASCII paths/volume-names (e.g. 'ı')
+# don't crash on Windows consoles using cp1252.
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 def print_help():
     print("EXT4 Tool CLI")
     print("Usage:")
